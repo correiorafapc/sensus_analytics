@@ -1,6 +1,6 @@
 {
   "name": "Sensus Analytics",
-  "domains": ["sensor"],
+  "domains": ["sensus_analytics"],
   "documentation": "https://github.com/correiorafapc/sensus_analytics",
   "codeowners": ["@correiorafapc"],
   "homeassistant": "2023.1.0",
