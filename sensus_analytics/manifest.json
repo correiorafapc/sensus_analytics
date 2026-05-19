@@ -1,7 +1,7 @@
 {
   "domain": "sensus_analytics",
   "name": "Sensus Analytics Integration",
-  "version": "2.0.0",
+  "version": "1.0.0",
   "documentation": "https://github.com/correiorafapc/sensus_analytics",
   "dependencies": [],
   "codeowners": [
