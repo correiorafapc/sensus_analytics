@@ -1,0 +1,8 @@
+{
+  "name": "Sensus Analytics",
+  "domains": ["sensor"],
+  "documentation": "https://github.com/correiorafapc/sensus_analytics",
+  "codeowners": ["@correiorafapc"],
+  "homeassistant": "2023.1.0",
+  "iot_class": "cloud_polling"
+}

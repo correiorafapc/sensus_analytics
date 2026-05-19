@@ -1,0 +1,136 @@
+{
+  "title": "Sensus Analytics",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Configure Sensus Analytics",
+        "data": {
+          "meter_type": "Meter Type",
+          "meter_type_description": "Select 'Water' for a water meter or 'Electric' for an electricity meter. You can add both by setting up this integration twice.",
+          "base_url": "Base URL",
+          "base_url_description": "The base URL of your Sensus Analytics portal (e.g., https://my-clync.sensus-analytics.com).",
+          "username": "Username",
+          "username_description": "Your Sensus Analytics portal username.",
+          "password": "Password",
+          "password_description": "Your Sensus Analytics portal password.",
+          "account_number": "Account Number",
+          "account_number_description": "Your utility account number.",
+          "meter_number": "Meter Number",
+          "meter_number_description": "Your physical meter ID number.",
+          "unit_type": "Unit Type",
+          "unit_type_description": "Display unit for usage. Water: 'gal' or 'CCF'. Electric: 'kWh'.",
+          "tier1_units": "Tier 1 Units",
+          "tier1_units_description": "Maximum units in Tier 1. Leave blank if your utility has no tier limit.",
+          "tier1_price": "Tier 1 Price (per unit)",
+          "tier1_price_description": "Price per unit for Tier 1 usage.",
+          "tier2_units": "Tier 2 Units",
+          "tier2_units_description": "Maximum units in Tier 2. Leave blank if not applicable.",
+          "tier2_price": "Tier 2 Price (per unit)",
+          "tier2_price_description": "Price per unit for Tier 2 usage.",
+          "tier3_price": "Tier 3 Price (per unit)",
+          "tier3_price_description": "Price per unit for Tier 3 usage.",
+          "service_fee": "Monthly Service Fee",
+          "service_fee_description": "Fixed monthly charge from your utility regardless of usage."
+        }
+      },
+      "init": {
+        "title": "Update Sensus Analytics Configuration",
+        "data": {
+          "meter_type": "Meter Type",
+          "base_url": "Base URL",
+          "username": "Username",
+          "password": "Password",
+          "account_number": "Account Number",
+          "meter_number": "Meter Number",
+          "unit_type": "Unit Type",
+          "tier1_units": "Tier 1 Units",
+          "tier1_price": "Tier 1 Price (per unit)",
+          "tier2_units": "Tier 2 Units",
+          "tier2_price": "Tier 2 Price (per unit)",
+          "tier3_price": "Tier 3 Price (per unit)",
+          "service_fee": "Monthly Service Fee"
+        }
+      }
+    },
+    "error": {
+      "auth": "Authentication failed. Please check your username and password."
+    },
+    "abort": {
+      "already_configured": "This meter is already configured."
+    }
+  },
+  "sensor": {
+    "water_yesterday_total_usage": {
+      "name": "Water Yesterday Total Usage",
+      "description": "Total water usage for yesterday from the widget API."
+    },
+    "water_today_usage": {
+      "name": "Water Today Usage",
+      "description": "Estimated water usage today, calculated as odometer delta since midnight. Persists across HA restarts."
+    },
+    "water_yesterday_same_hour_usage": {
+      "name": "Water Yesterday Same Hour Usage",
+      "description": "Water usage at this same hour yesterday. For comparison only — not for Energy Dashboard."
+    },
+    "water_lifetime_total_usage": {
+      "name": "Water Lifetime Total Usage",
+      "description": "Total cumulative water usage ever recorded by the meter. Use this in the Energy Dashboard."
+    },
+    "water_billing_cycle_usage": {
+      "name": "Water Current Billing Cycle Usage",
+      "description": "Total water usage accumulated in the current billing cycle."
+    },
+    "water_billing_cost": {
+      "name": "Water Estimated Billing Cost",
+      "description": "Estimated cost for the current billing cycle based on configured tier prices and service fee."
+    },
+    "water_daily_cost": {
+      "name": "Water Estimated Daily Cost",
+      "description": "Estimated water cost for yesterday based on configured tier prices."
+    },
+    "electric_yesterday_total_usage": {
+      "name": "Electric Yesterday Total Usage",
+      "description": "Total electricity usage for yesterday from the widget API."
+    },
+    "electric_yesterday_same_hour_usage": {
+      "name": "Electric Yesterday Same Hour Usage",
+      "description": "Electricity usage at this same hour yesterday. For comparison only — not for Energy Dashboard."
+    },
+    "electric_lifetime_total_usage": {
+      "name": "Electric Lifetime Total Usage",
+      "description": "Total cumulative electricity usage ever recorded by the meter. Use this in the Energy Dashboard."
+    },
+    "electric_billing_cycle_usage": {
+      "name": "Electric Current Billing Cycle Usage",
+      "description": "Total electricity usage accumulated in the current billing cycle."
+    },
+    "electric_billing_cost": {
+      "name": "Electric Estimated Billing Cost",
+      "description": "Estimated cost for the current electricity billing cycle."
+    },
+    "electric_daily_cost": {
+      "name": "Electric Estimated Daily Cost",
+      "description": "Estimated electricity cost for yesterday."
+    },
+    "shared_meter_address": {
+      "name": "Meter Address",
+      "description": "Service address associated with this meter."
+    },
+    "shared_last_read": {
+      "name": "Last Read",
+      "description": "Timestamp of the last meter reading received by the utility."
+    },
+    "shared_last_data_timestamp": {
+      "name": "Last Data Timestamp",
+      "description": "Timestamp of the most recent hourly data point available."
+    },
+    "shared_yesterday_rainfall": {
+      "name": "Yesterday Same Hour Rainfall",
+      "description": "Rainfall at this same hour yesterday."
+    },
+    "shared_yesterday_temperature": {
+      "name": "Yesterday Same Hour Temperature",
+      "description": "Temperature at this same hour yesterday."
+    }
+  }
+}
