@@ -1,6 +1,6 @@
 # Sensus Analytics Integration for Home Assistant
 
-![Version](https://img.shields.io/badge/version-1.0.0-blue)
+![Version](https://img.shields.io/badge/version-1.0.1-blue)
 ![HACS](https://img.shields.io/badge/HACS-Custom-orange)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
@@ -30,10 +30,12 @@ A Home Assistant custom integration for **Sensus Analytics** utility portals, su
 ## Installation
 
 ### Via HACS (Recommended)
-1. Add this repository as a custom repository
-2. Install via HACS
-3. Restart Home Assistant
 
+1. Open **HACS** in Home Assistant
+2. Go to **Integrations** → click the **⋮** menu → **Custom repositories**
+3. Add `https://github.com/correiorafapc/sensus_analytics` with category **Integration**
+4. Search for **Sensus Analytics** and click **Download**
+5. Restart Home Assistant
 
 ### Manual
 
@@ -85,6 +87,8 @@ A Home Assistant custom integration for **Sensus Analytics** utility portals, su
 
 | Sensor | Description | Energy Dashboard |
 |---|---|---|
+| Electric Today Usage | Estimated usage since midnight (persists across restarts) | ✅ Optional |
+| Electric Today Usage | Estimated usage since midnight (persists across restarts) | ✅ Optional |
 | Electric Lifetime Total Usage | All-time odometer — never resets | ✅ Recommended |
 | Electric Current Billing Cycle Usage | Total usage this billing cycle | — |
 | Electric Yesterday Total Usage | Yesterday's total from the widget API | — |
