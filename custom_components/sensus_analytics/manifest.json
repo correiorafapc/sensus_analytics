@@ -1,13 +1,13 @@
 {
   "domain": "sensus_analytics",
   "name": "Sensus Analytics Integration",
-  "version": "1.0.0",
-  "documentation": "https://github.com/correiorafapc/sensus_analytics",
-  "issue_tracker": "https://github.com/correiorafapc/sensus_analytics/issues",
   "codeowners": ["@correiorafapc"],
-  "requirements": [],
-  "dependencies": [],
   "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/correiorafapc/sensus_analytics",
+  "integration_type": "service",
   "iot_class": "cloud_polling",
-  "integration_type": "service"
+  "issue_tracker": "https://github.com/correiorafapc/sensus_analytics/issues",
+  "requirements": [],
+  "version": "1.0.0"
 }
