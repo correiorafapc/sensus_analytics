@@ -30,12 +30,10 @@ A Home Assistant custom integration for **Sensus Analytics** utility portals, su
 ## Installation
 
 ### Via HACS (Recommended)
+1. Add this repository as a custom repository
+2. Install via HACS
+3. Restart Home Assistant
 
-1. Open **HACS** in Home Assistant
-2. Go to **Integrations** → click the **⋮** menu → **Custom repositories**
-3. Add `https://github.com/correiorafapc/sensus_analytics` with category **Integration**
-4. Search for **Sensus Analytics** and click **Download**
-5. Restart Home Assistant
 
 ### Manual
 
