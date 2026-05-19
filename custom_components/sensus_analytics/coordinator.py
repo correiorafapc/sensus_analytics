@@ -72,10 +72,9 @@ class SensusAnalyticsDataUpdateCoordinator(DataUpdateCoordinator):
                 else:
                     _LOGGER.warning("Failed to fetch hourly data for %s meter", self.meter_type)
 
-                # Track midnight odometer for today's usage (water only — electric doesn't need delta)
-                if self.meter_type == METER_TYPE_WATER:
-                    await self._async_update_midnight_odometer(data)
-                    data["odometer_at_midnight"] = self._odometer_at_midnight
+                # Track midnight odometer for today's usage (both water and electric)
+                await self._async_update_midnight_odometer(data)
+                data["odometer_at_midnight"] = self._odometer_at_midnight
 
                 return data
 
