@@ -1,0 +1,53 @@
+{
+  "title": "Sensus Analytics",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Configure Sensus Analytics",
+        "data": {
+          "meter_type": "Meter Type",
+          "base_url": "Base URL",
+          "username": "Username",
+          "password": "Password",
+          "account_number": "Account Number",
+          "meter_number": "Meter Number",
+          "unit_type": "Unit Type",
+          "tier1_units": "Tier 1 Units",
+          "tier1_price": "Tier 1 Price (per unit)",
+          "tier2_units": "Tier 2 Units",
+          "tier2_price": "Tier 2 Price (per unit)",
+          "tier3_price": "Tier 3 Price (per unit)",
+          "service_fee": "Monthly Service Fee"
+        }
+      }
+    },
+    "error": {
+      "auth": "Authentication failed. Please check your username and password."
+    },
+    "abort": {
+      "already_configured": "This meter is already configured."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Update Sensus Analytics Configuration",
+        "data": {
+          "meter_type": "Meter Type",
+          "base_url": "Base URL",
+          "username": "Username",
+          "password": "Password",
+          "account_number": "Account Number",
+          "meter_number": "Meter Number",
+          "unit_type": "Unit Type",
+          "tier1_units": "Tier 1 Units",
+          "tier1_price": "Tier 1 Price (per unit)",
+          "tier2_units": "Tier 2 Units",
+          "tier2_price": "Tier 2 Price (per unit)",
+          "tier3_price": "Tier 3 Price (per unit)",
+          "service_fee": "Monthly Service Fee"
+        }
+      }
+    }
+  }
+}
