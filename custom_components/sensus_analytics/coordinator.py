@@ -6,7 +6,6 @@ from urllib.parse import urljoin
 
 import aiohttp
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers.storage import Store
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 from homeassistant.util import dt as dt_util
 
@@ -23,9 +22,6 @@ from .const import (
 
 _LOGGER = logging.getLogger(__name__)
 
-STORAGE_KEY = "sensus_analytics_midnight_odometer"
-STORAGE_VERSION = 1
-
 
 class SensusAnalyticsDataUpdateCoordinator(DataUpdateCoordinator):
     """Class to manage fetching data from the Sensus Analytics API."""
@@ -40,9 +36,6 @@ class SensusAnalyticsDataUpdateCoordinator(DataUpdateCoordinator):
         self.meter_number = config_entry.data[CONF_METER_NUMBER]
         self.meter_type = config_entry.data.get(CONF_METER_TYPE, METER_TYPE_WATER)
         self.config_entry = config_entry
-        self._odometer_at_midnight = None
-        self._odometer_date = None
-        self._store = Store(hass, STORAGE_VERSION, f"{STORAGE_KEY}_{self.meter_type}_{self.meter_number}")
 
         super().__init__(
             hass,
@@ -66,15 +59,17 @@ class SensusAnalyticsDataUpdateCoordinator(DataUpdateCoordinator):
 
                 data = await self._fetch_daily_data(session)
 
-                hourly_data = await self._fetch_hourly_data(session)
-                if hourly_data:
-                    data["hourly_usage_data"] = hourly_data
-                else:
-                    _LOGGER.warning("Failed to fetch hourly data for %s meter", self.meter_type)
+                today_hourly, yesterday_hourly = await self._fetch_hourly_data(session)
 
-                # Track midnight odometer for today's usage (both water and electric)
-                await self._async_update_midnight_odometer(data)
-                data["odometer_at_midnight"] = self._odometer_at_midnight
+                if today_hourly:
+                    data["today_hourly_data"] = today_hourly
+                else:
+                    data["today_hourly_data"] = []
+
+                if yesterday_hourly:
+                    data["hourly_usage_data"] = yesterday_hourly
+                else:
+                    _LOGGER.warning("Failed to fetch yesterday hourly data for %s meter", self.meter_type)
 
                 return data
 
@@ -121,10 +116,31 @@ class SensusAnalyticsDataUpdateCoordinator(DataUpdateCoordinator):
         return data
 
     async def _fetch_hourly_data(self, session: aiohttp.ClientSession):
-        """Fetch hourly usage data for yesterday."""
-        local_tz = dt_util.get_time_zone(self.hass.config.time_zone)
-        target_date = datetime.now(local_tz) - timedelta(days=1)
+        """Fetch today's and yesterday's hourly usage data.
 
+        Returns (today_entries, yesterday_entries). today_entries is None if
+        the API reports today's data is not yet available (showToday=False).
+        """
+        local_tz = dt_util.get_time_zone(self.hass.config.time_zone)
+        now_local = datetime.now(local_tz)
+
+        # Try today first — use showToday flag to confirm data is available
+        today_raw = await self._fetch_hourly_data_for_date(session, now_local)
+        today_entries = None
+        if today_raw and today_raw.get("showToday"):
+            today_entries = self._process_hourly_data_response(today_raw)
+            _LOGGER.debug("Today hourly data available: %s entries", len(today_entries) if today_entries else 0)
+        else:
+            _LOGGER.debug("Today hourly data not yet available (showToday=False)")
+
+        # Always fetch yesterday for comparison sensors
+        yesterday_raw = await self._fetch_hourly_data_for_date(session, now_local - timedelta(days=1))
+        yesterday_entries = self._process_hourly_data_response(yesterday_raw) if yesterday_raw else None
+
+        return today_entries, yesterday_entries
+
+    async def _fetch_hourly_data_for_date(self, session: aiohttp.ClientSession, target_date: datetime):
+        """Fetch raw hourly JSON for a specific date."""
         start_ts, end_ts = self._get_start_end_timestamps(target_date)
         usage_url = urljoin(
             self.base_url,
@@ -148,11 +164,9 @@ class SensusAnalyticsDataUpdateCoordinator(DataUpdateCoordinator):
                 timeout=aiohttp.ClientTimeout(total=10),
             ) as response:
                 response.raise_for_status()
-                hourly_data = await response.json()
-
-            _LOGGER.debug("Hourly data response: %s", hourly_data)
-            return self._process_hourly_data_response(hourly_data)
-
+                data = await response.json()
+            _LOGGER.debug("Hourly data response: %s", data)
+            return data
         except aiohttp.ClientError as e:
             _LOGGER.error("Hourly data request failed: %s", e)
             return None
@@ -166,30 +180,6 @@ class SensusAnalyticsDataUpdateCoordinator(DataUpdateCoordinator):
         start_dt = datetime.combine(target_date, datetime.min.time(), tzinfo=local_tz)
         end_dt = datetime.combine(target_date, datetime.max.time(), tzinfo=local_tz)
         return int(start_dt.timestamp() * 1000), int(end_dt.timestamp() * 1000)
-
-    async def _async_update_midnight_odometer(self, data):
-        """Persist the midnight odometer value so HA restarts don't reset Today Usage."""
-        local_tz = dt_util.get_time_zone(self.hass.config.time_zone)
-        today = datetime.now(local_tz).date()
-
-        if self._odometer_date == today:
-            return  # Already set for today
-
-        # Try to restore from persistent storage first
-        stored = await self._store.async_load()
-        if stored and stored.get("date") == str(today):
-            self._odometer_at_midnight = stored.get("value")
-            self._odometer_date = today
-            _LOGGER.debug("Midnight odometer restored from storage: %s for %s", self._odometer_at_midnight, today)
-        else:
-            # New day — save current odometer as the midnight baseline
-            self._odometer_at_midnight = data.get("latestReadUsage")
-            self._odometer_date = today
-            await self._store.async_save({
-                "date": str(today),
-                "value": self._odometer_at_midnight,
-            })
-            _LOGGER.debug("Midnight odometer saved to storage: %s for %s", self._odometer_at_midnight, today)
 
     def _process_hourly_data_response(self, hourly_data):
         """Process and structure the hourly data response."""
