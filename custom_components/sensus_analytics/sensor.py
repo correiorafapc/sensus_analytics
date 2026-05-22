@@ -38,7 +38,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
     if meter_type == METER_TYPE_WATER:
         type_sensors = [
             WaterYesterdayTotalUsageSensor(coordinator, entry),
-            WaterTodayUsageSensor(coordinator, entry),
             WaterLastHourUsageSensor(coordinator, entry),
             WaterLifetimeTotalUsageSensor(coordinator, entry),
             WaterBillingUsageSensor(coordinator, entry),
@@ -48,7 +47,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
     else:
         type_sensors = [
             ElectricYesterdayTotalUsageSensor(coordinator, entry),
-            ElectricTodayUsageSensor(coordinator, entry),
             ElectricLastHourUsageSensor(coordinator, entry),
             ElectricLifetimeTotalUsageSensor(coordinator, entry),
             ElectricBillingUsageSensor(coordinator, entry),
@@ -335,11 +333,11 @@ class LastHourTemperatureSensor(SensorBase):
 # ---------------------------------------------------------------------------
 
 class WaterYesterdayTotalUsageSensor(WaterSensorBase):
-    """Total water usage for yesterday from the widget API."""
+    """Today's total water usage from the widget API (updates throughout the day)."""
 
     def __init__(self, coordinator, entry):
         super().__init__(coordinator, entry)
-        self._attr_name = f"{DEFAULT_NAME} Water Yesterday Total Usage"
+        self._attr_name = f"{DEFAULT_NAME} Water Daily Usage"
         self._attr_unique_id = f"{self._unique_id}_daily_usage"
         self._attr_icon = "mdi:water"
         self._attr_state_class = SensorStateClass.MEASUREMENT
@@ -347,35 +345,6 @@ class WaterYesterdayTotalUsageSensor(WaterSensorBase):
     @property
     def native_value(self):
         return self._convert_usage(self.coordinator.data.get("dailyUsage"))
-
-
-class WaterTodayUsageSensor(WaterSensorBase):
-    """Estimated today's water usage based on odometer delta since midnight."""
-
-    def __init__(self, coordinator, entry):
-        super().__init__(coordinator, entry)
-        self._attr_name = f"{DEFAULT_NAME} Water Today Usage"
-        self._attr_unique_id = f"{self._unique_id}_today_usage"
-        self._attr_icon = "mdi:water-plus"
-        self._attr_device_class = SensorDeviceClass.WATER
-        self._attr_suggested_unit_of_measurement = UnitOfVolume.GALLONS
-        self._attr_state_class = SensorStateClass.TOTAL
-
-    @property
-    def last_reset(self):
-        return dt_util.start_of_local_day()
-
-    @property
-    def native_value(self):
-        current = self.coordinator.data.get("latestReadUsage")
-        midnight = self.coordinator.data.get("odometer_at_midnight")
-        if current is None or midnight is None:
-            return None
-        try:
-            delta = float(current) - float(midnight)
-            return self._convert_usage(max(delta, 0))
-        except (ValueError, TypeError):
-            return None
 
 
 class WaterLastHourUsageSensor(WaterSensorBase):
@@ -509,11 +478,11 @@ class WaterEstimatedDailyCostSensor(SensorBase):
 # ---------------------------------------------------------------------------
 
 class ElectricYesterdayTotalUsageSensor(ElectricSensorBase):
-    """Total electricity usage for yesterday from the widget API."""
+    """Today's total electricity usage from the widget API (updates throughout the day)."""
 
     def __init__(self, coordinator, entry):
         super().__init__(coordinator, entry)
-        self._attr_name = f"{DEFAULT_NAME} Electric Yesterday Total Usage"
+        self._attr_name = f"{DEFAULT_NAME} Electric Daily Usage"
         self._attr_unique_id = f"{self._unique_id}_daily_usage"
         self._attr_icon = "mdi:lightning-bolt"
         self._attr_state_class = SensorStateClass.MEASUREMENT
@@ -523,35 +492,6 @@ class ElectricYesterdayTotalUsageSensor(ElectricSensorBase):
         return self._convert_usage(self.coordinator.data.get("dailyUsage"))
 
 
-
-class ElectricTodayUsageSensor(ElectricSensorBase):
-    """Estimated today's electricity usage based on odometer delta since midnight."""
-
-    def __init__(self, coordinator, entry):
-        super().__init__(coordinator, entry)
-        self._attr_name = f"{DEFAULT_NAME} Electric Today Usage"
-        self._attr_unique_id = f"{self._unique_id}_today_usage"
-        self._attr_icon = "mdi:lightning-bolt-circle"
-        self._attr_device_class = SensorDeviceClass.ENERGY
-        self._attr_state_class = SensorStateClass.TOTAL
-        self._attr_suggested_unit_of_measurement = "kWh"
-
-    @property
-    def last_reset(self):
-        return dt_util.start_of_local_day()
-
-    @property
-    def native_value(self):
-        """Return estimated today's usage as odometer delta since midnight."""
-        current = self.coordinator.data.get("latestReadUsage")
-        midnight = self.coordinator.data.get("odometer_at_midnight")
-        if current is None or midnight is None:
-            return None
-        try:
-            delta = float(current) - float(midnight)
-            return self._convert_usage(max(delta, 0))
-        except (ValueError, TypeError):
-            return None
 
 class ElectricLastHourUsageSensor(ElectricSensorBase):
     """Electricity usage from yesterday at the same hour as now."""
