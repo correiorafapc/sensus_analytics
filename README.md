@@ -1,6 +1,6 @@
 # Sensus Analytics Integration for Home Assistant
 
-![Version](https://img.shields.io/badge/version-1.0.1-blue)
+![Version](https://img.shields.io/badge/version-2.0.0-blue)
 ![HACS](https://img.shields.io/badge/HACS-Custom-orange)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
@@ -74,10 +74,9 @@ A Home Assistant custom integration for **Sensus Analytics** utility portals, su
 
 | Sensor | Description | Energy Dashboard |
 |---|---|---|
-| Water Today Usage | Estimated usage since midnight (persists across restarts) | ✅ Optional |
 | Water Lifetime Total Usage | All-time odometer — never resets | ✅ Recommended |
 | Water Current Billing Cycle Usage | Total usage this billing cycle | — |
-| Water Yesterday Total Usage | Yesterday's total from the widget API | — |
+| Water Daily Usage | Today's running total from the widget API | — |
 | Water Yesterday Same Hour Usage | Yesterday's usage at the current hour | — |
 | Water Estimated Billing Cost | Calculated cost for this billing cycle | — |
 | Water Estimated Daily Cost | Calculated cost for yesterday | — |
@@ -87,11 +86,9 @@ A Home Assistant custom integration for **Sensus Analytics** utility portals, su
 
 | Sensor | Description | Energy Dashboard |
 |---|---|---|
-| Electric Today Usage | Estimated usage since midnight (persists across restarts) | ✅ Optional |
-| Electric Today Usage | Estimated usage since midnight (persists across restarts) | ✅ Optional |
 | Electric Lifetime Total Usage | All-time odometer — never resets | ✅ Recommended |
 | Electric Current Billing Cycle Usage | Total usage this billing cycle | — |
-| Electric Yesterday Total Usage | Yesterday's total from the widget API | — |
+| Electric Daily Usage | Today's running total from the widget API | — |
 | Electric Yesterday Same Hour Usage | Yesterday's usage at the current hour | — |
 | Electric Estimated Billing Cost | Calculated cost for this billing cycle | — |
 | Electric Estimated Daily Cost | Calculated cost for yesterday | — |
